@@ -1,0 +1,520 @@
+
+                        <!DOCTYPE html>
+                        <html lang="en">
+                        <head>
+                            <meta charset="UTF-8">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+							<style>
+								body {
+									background-color: white; /* Ensure the iframe has a white background */
+								}
+
+								
+							</style>
+                        </head>
+                        <body>
+                            <!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قائمة المهام</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* تنسيقات عامة */
+body {
+    font-family: 'Cairo', sans-serif;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    transition: color 0.3s ease;
+}
+.container {
+    max-width: 500px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+/* حقل النص وزر الإضافة */
+input[type="text"] {
+    width: calc(100% - 22px);
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+button {
+    padding: 12px 20px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+button:hover {
+    background-color: #357ab8;
+    transform: scale(1.05);
+}
+/* أزرار الأهمية (دوائر ملونة) */
+.priority-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+.priority-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.priority-btn.low {
+    background-color: #388E3C; /* أخضر داكن */
+}
+.priority-btn.high {
+    background-color: #E53935; /* أحمر داكن */
+}
+.priority-btn.selected {
+    transform: scale(1.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+/* قائمة المهام */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+li {
+    margin-bottom: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease-in-out forwards;
+}
+li:hover {
+    transform: scale(1.02);
+}
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.task-title {
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+.task-details {
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+.completed .task-title {
+    text-decoration: line-through;
+}
+/* زر الحذف */
+.delete-btn {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+.delete-btn:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+/* النمط الفاتح */
+body.light-mode {
+    background: linear-gradient(to bottom, #f3f4f6, #e5e7eb);
+    color: #333;
+}
+body.light-mode .container {
+    background: #ffffff;
+}
+body.light-mode input[type="text"] {
+    background-color: #ffffff;
+    color: #333;
+    border-color: #d1d5db;
+}
+body.light-mode li {
+    background: #ffffff;
+    color: #333;
+}
+body.light-mode .task-details {
+    color: #6b7280;
+}
+/* النمط الداكن */
+body.dark-mode {
+    background: radial-gradient(ellipse at bottom, #1e1e2f, #2c3e50);
+    color: #ecf0f1;
+}
+body.dark-mode .container {
+    background: #2b3a42;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+}
+body.dark-mode input[type="text"] {
+    background-color: #3b4a54;
+    color: #ecf0f1;
+    border-color: #3b4a54;
+}
+body.dark-mode li {
+    background: #3b4a54;
+    color: #ecf0f1;
+}
+body.dark-mode .task-details {
+    color: #bdc3c7;
+}
+/* تلوين المهام حسب الأهمية */
+.low-priority {
+    background-color: #C8E6C9; /* أخضر فاتح */
+    border-left: 5px solid #388E3C; /* شريط جانبي أخضر داكن */
+}
+.high-priority {
+    background-color: #FFCDD2; /* أحمر فاتح */
+    border-left: 5px solid #E53935; /* شريط جانبي أحمر داكن */
+}
+/* تلوين المهام في النمط الداكن */
+body.dark-mode .low-priority {
+    background-color: #2e7d32; /* أخضر داكن */
+    border-left: 5px solid #1b5e20;
+}
+body.dark-mode .high-priority {
+    background-color: #c62828; /* أحمر داكن */
+    border-left: 5px solid #b71c1c;
+}
+/* زر التبديل بين الأنماط */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+body.dark-mode .theme-toggle {
+    color: #ecf0f1;
+}
+/* زر التبديل بين اللغات */
+.language-toggle {
+    position: fixed;
+    top: 60px;
+    left: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+body.dark-mode .language-toggle {
+    color: #ecf0f1;
+}
+/* عداد المهام */
+.stats {
+    margin-top: 20px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.stats i {
+    font-size: 1.5rem;
+    margin-right: 5px;
+}
+.stats span {
+    display: flex;
+    align-items: center;
+}
+.stats .completed {
+    color: #2ecc71;
+}
+.stats .remaining {
+    color: #e74c3c;
+}
+/* رسوم متحركة */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body class="light-mode" lang="ar" dir="rtl">
+<!-- زر التبديل بين الأنماط -->
+<div class="theme-toggle" id="themeToggle">🌙</div>
+<!-- زر التبديل بين اللغات -->
+<div class="language-toggle" id="languageToggle">AR</div>
+<h1 id="pageTitle">قائمة المهام</h1>
+<div class="container">
+    <input type="text" id="taskInput" placeholder="أضف مهمة جديدة..." />
+    <!-- أزرار الأهمية (دوائر ملونة) -->
+    <div class="priority-buttons">
+        <button class="priority-btn low selected" data-priority="منخفضة"></button>
+        <button class="priority-btn high" data-priority="عالية"></button>
+    </div>
+    <button onclick="addTask()"><span id="addTaskText">إضافة مهمة</span></button>
+    <ul id="taskList"></ul>
+    <!-- عداد المهام -->
+    <div class="stats">
+        <span class="completed"><i class="fas fa-check-circle"></i> المكتملة: <span id="completedCount">0</span></span>
+        <span class="remaining"><i class="fas fa-exclamation-circle"></i> المتبقية: <span id="remainingCount">0</span></span>
+    </div>
+</div>
+<script>
+// متغيرات اللغة
+const translations = {
+    ar: {
+        pageTitle: "قائمة المهام",
+        addTask: "إضافة مهمة",
+        deleteTask: "حذف"
+    },
+    en: {
+        pageTitle: "Task List",
+        addTask: "Add Task",
+        deleteTask: "Delete"
+    }
+};
+let currentLanguage = 'ar';
+
+// تحديث النصوص بناءً على اللغة
+function updateLanguage(lang) {
+    currentLanguage = lang;
+    document.getElementById('pageTitle').textContent = translations[lang].pageTitle;
+    document.getElementById('addTaskText').textContent = translations[lang].addTask;
+    document.querySelectorAll('.delete-btn').forEach(btn => btn.textContent = translations[lang].deleteTask);
+    // تحديث زر اللغة
+    document.getElementById('languageToggle').textContent = lang === 'ar' ? 'EN' : 'AR';
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+}
+
+// تتبع الزر المحدد حاليًا
+let selectedPriority = "منخفضة";
+
+// إضافة حدث النقر على أزرار الأهمية
+document.querySelectorAll('.priority-btn').forEach(button => {
+    button.addEventListener('click', () => {
+        document.querySelectorAll('.priority-btn').forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+        selectedPriority = button.getAttribute('data-priority');
+    });
+});
+
+// دالة لإضافة مهمة
+function addTask() {
+    const taskInput = document.getElementById('taskInput');
+    const taskText = taskInput.value.trim();
+    if (taskText === '') {
+        alert(translations[currentLanguage].addTaskAlert || 'يرجى إدخال مهمة!');
+        return;
+    }
+
+    const taskList = document.getElementById('taskList');
+
+    // الحصول على الوقت والتاريخ من جهاز المستخدم
+    const dateTime = new Date();
+    const formattedDate = `${dateTime.getDate()}/${dateTime.getMonth() + 1}/${dateTime.getFullYear()}`;
+    const formattedTime = `${dateTime.getHours()}:${String(dateTime.getMinutes()).padStart(2, '0')}`;
+
+    // إنشاء عنصر قائمة جديد
+    const li = document.createElement('li');
+
+    // إضافة عنوان المهمة
+    const taskHeader = document.createElement('div');
+    taskHeader.className = 'task-header';
+    const taskTitle = document.createElement('span');
+    taskTitle.className = 'task-title';
+    taskTitle.textContent = taskText;
+
+    // زر الحذف
+    const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = translations[currentLanguage].deleteTask;
+    deleteBtn.className = 'delete-btn';
+    deleteBtn.onclick = () => {
+        taskList.removeChild(li);
+        saveTasksToLocalStorage();
+        updateStats();
+    };
+
+    taskHeader.appendChild(taskTitle);
+    taskHeader.appendChild(deleteBtn);
+
+    // إضافة تفاصيل المهمة (الأهمية والوقت)
+    const taskDetails = document.createElement('div');
+    taskDetails.className = 'task-details';
+    taskDetails.textContent = `الأهمية: ${selectedPriority} | التاريخ: ${formattedDate} | الوقت: ${formattedTime}`;
+
+    // إضافة العناصر إلى العنصر الرئيسي
+    li.appendChild(taskHeader);
+    li.appendChild(taskDetails);
+
+    // تلوين المهمة حسب الأهمية
+    if (selectedPriority === "منخفضة") li.classList.add('low-priority');
+    else if (selectedPriority === "عالية") li.classList.add('high-priority');
+
+    // إضافة حدث النقر لتحديد المهمة كمكتملة
+    li.addEventListener('click', () => {
+        li.classList.toggle('completed');
+        saveTasksToLocalStorage();
+        updateStats();
+    });
+
+    // إضافة العنصر إلى القائمة وترتيب المهام تلقائيًا
+    taskList.appendChild(li);
+    sortTasksByPriority();
+    saveTasksToLocalStorage();
+    updateStats();
+
+    // مسح حقل الإدخال
+    taskInput.value = '';
+}
+
+// دالة لتحديث عداد المهام
+function updateStats() {
+    const tasks = document.querySelectorAll('#taskList li');
+    let completedCount = 0;
+    tasks.forEach(task => {
+        if (task.classList.contains('completed')) completedCount++;
+    });
+    document.getElementById('completedCount').textContent = completedCount;
+    document.getElementById('remainingCount').textContent = tasks.length - completedCount;
+}
+
+// دالة لحفظ المهام في localStorage
+function saveTasksToLocalStorage() {
+    const tasks = [];
+    document.querySelectorAll('#taskList li').forEach(task => {
+        const title = task.querySelector('.task-title').textContent;
+        const priority = task.classList.contains('low-priority') ? 'منخفضة' :
+                         task.classList.contains('high-priority') ? 'عالية' : 'منخفضة';
+        const details = task.querySelector('.task-details').textContent;
+        tasks.push({ title, priority, details });
+    });
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// دالة لاسترجاع المهام من localStorage
+function loadTasksFromLocalStorage() {
+    const savedTasks = localStorage.getItem('tasks');
+    if (savedTasks) {
+        const tasks = JSON.parse(savedTasks);
+        tasks.forEach(task => {
+            const li = document.createElement('li');
+
+            // إضافة عنوان المهمة
+            const taskHeader = document.createElement('div');
+            taskHeader.className = 'task-header';
+            const taskTitle = document.createElement('span');
+            taskTitle.className = 'task-title';
+            taskTitle.textContent = task.title;
+
+            // زر الحذف
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = translations[currentLanguage].deleteTask;
+            deleteBtn.className = 'delete-btn';
+            deleteBtn.onclick = () => {
+                const taskList = document.getElementById('taskList');
+                taskList.removeChild(li);
+                saveTasksToLocalStorage();
+                updateStats();
+            };
+
+            taskHeader.appendChild(taskTitle);
+            taskHeader.appendChild(deleteBtn);
+
+            // إضافة تفاصيل المهمة (الأهمية والوقت)
+            const taskDetails = document.createElement('div');
+            taskDetails.className = 'task-details';
+            taskDetails.textContent = task.details;
+
+            // إضافة العناصر إلى العنصر الرئيسي
+            li.appendChild(taskHeader);
+            li.appendChild(taskDetails);
+
+            // تلوين المهمة حسب الأهمية
+            if (task.priority === 'منخفضة') li.classList.add('low-priority');
+            else if (task.priority === 'عالية') li.classList.add('high-priority');
+
+            // إضافة حدث النقر لتحديد المهمة كمكتملة
+            li.addEventListener('click', () => {
+                li.classList.toggle('completed');
+                saveTasksToLocalStorage();
+                updateStats();
+            });
+
+            document.getElementById('taskList').appendChild(li);
+        });
+    }
+    sortTasksByPriority();
+    updateStats();
+}
+
+// استدعاء الدالة عند تحميل الصفحة
+window.onload = () => {
+    loadTasksFromLocalStorage();
+    updateLanguage(currentLanguage);
+};
+
+// دالة لترتيب المهام تلقائيًا حسب الأهمية
+function sortTasksByPriority() {
+    const tasks = Array.from(document.querySelectorAll('#taskList li'));
+    tasks.sort((a, b) => {
+        const priorityOrder = { 'عالية': 1, 'منخفضة': 2 };
+        const aPriority = a.classList.contains('high-priority') ? 'عالية' : 'منخفضة';
+        const bPriority = b.classList.contains('high-priority') ? 'عالية' : 'منخفضة';
+        return priorityOrder[aPriority] - priorityOrder[bPriority];
+    });
+    const taskList = document.getElementById('taskList');
+    taskList.innerHTML = '';
+    tasks.forEach(task => taskList.appendChild(task));
+}
+
+// دالة لتبديل النمط
+const themeToggle = document.getElementById('themeToggle');
+let isDarkMode = false;
+themeToggle.addEventListener('click', () => {
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    document.body.classList.toggle('light-mode', !isDarkMode);
+    themeToggle.textContent = isDarkMode ? '☀️' : '🌙';
+});
+
+// دالة لتبديل اللغة
+const languageToggle = document.getElementById('languageToggle');
+languageToggle.addEventListener('click', () => {
+    currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+    updateLanguage(currentLanguage);
+});
+</script>
+</body>
+</html>
+
+
+
+							<script>
+                            	
+							</script>
+                        </body>
+                        </html>
+                    
